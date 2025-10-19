@@ -196,22 +196,36 @@
         .modal-overlay.visible .modal-content { transform: scale(1); }
 
         /* Hidden div for exporting */
-        .export-container { position: absolute; left: -9999px; top: auto; width: 800px; }
+        .export-container { position: absolute; left: -9999px; top: auto; width: 850px; }
         
-        /* Styles for professional document export (remains the same) */
-        #export-content { font-family: 'Times New Roman', Times, serif; color: #000; padding: 1rem; background-color: #fff; }
-        #export-content h1 { font-size: 24px; font-weight: bold; text-align: center; margin-bottom: 20px; }
-        #export-content h2 { font-size: 18px; font-weight: bold; border-bottom: 2px solid #333; padding-bottom: 5px; margin-top: 20px; margin-bottom: 10px; }
-        #export-content .meta-info { text-align: center; margin-bottom: 20px; font-size: 12px; color: #555; }
-        #export-content .summary-item { font-size: 14px; margin-bottom: 5px; }
-        #export-content table { width: 100%; border-collapse: collapse; margin-top: 15px; page-break-inside: auto; }
-        #export-content tr { page-break-inside: avoid; page-break-after: auto; }
-        #export-content th, #export-content td { border: 1px solid #ccc; padding: 8px; text-align: left; font-size: 12px; }
-        #export-content thead { display: table-header-group; }
-        #export-content th { background-color: #e9ecef; font-weight: bold; }
-        #export-content .footer { text-align: center; margin-top: 30px; font-size: 10px; color: #777; }
+        /* Styles for professional document export/view */
+        .export-document {
+            font-family: Arial, sans-serif;
+            color: #333;
+            padding: 2rem;
+            background-color: #fff;
+            border: 1px solid #ddd;
+        }
+        .export-document h1 { font-size: 28px; font-weight: bold; text-align: center; margin-bottom: 10px; color: #1a237e; }
+        .export-document h2 { font-size: 22px; font-weight: bold; text-align: center; margin-bottom: 25px; color: #555; border-bottom: 2px solid #1a237e; padding-bottom: 10px;}
+        .export-document .meta-info { text-align: center; margin-bottom: 25px; font-size: 14px; color: #555; line-height: 1.6; }
+        .export-document .meta-info strong { color: #000; }
+        .export-document .summary-section { background-color: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; margin-bottom: 30px; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; }
+        .export-document .summary-item { text-align: center; }
+        .export-document .summary-item .label { font-size: 14px; color: #666; margin-bottom: 5px; }
+        .export-document .summary-item .value { font-size: 20px; font-weight: bold; }
+        .export-document .summary-item .value.present, .export-document .summary-item .value.received { color: #28a745; }
+        .export-document .summary-item .value.absent, .export-document .summary-item .value.due { color: #dc3545; }
+        .export-document h3 { font-size: 18px; font-weight: bold; border-bottom: 1px solid #ccc; padding-bottom: 8px; margin-top: 30px; margin-bottom: 15px; color: #333; }
+        .export-document table { width: 100%; border-collapse: collapse; margin-top: 15px; page-break-inside: auto; }
+        .export-document tr { page-break-inside: avoid; page-break-after: auto; }
+        .export-document th, .export-document td { border: 1px solid #ddd; padding: 12px; text-align: left; font-size: 14px; }
+        .export-document thead { display: table-header-group; }
+        .export-document th { background-color: #e9ecef; font-weight: bold; color: #495057; }
+        .export-document tbody tr:nth-child(even) { background-color: #f8f9fa; }
+        .export-document .footer { text-align: center; margin-top: 40px; font-size: 12px; color: #888; border-top: 1px solid #ccc; padding-top: 15px;}
         
-        /* NEW STYLES FOR REDESIGN */
+        /* Redesign Styles */
         .control-group {
             border: 1px solid var(--border-color);
             border-radius: 1rem;
@@ -378,7 +392,7 @@
     
     <!-- Hidden container for generating exports -->
     <div class="export-container">
-        <div id="export-content"></div>
+        <div id="export-content-wrapper"></div>
     </div>
 
     <!-- Main Application Script -->
@@ -512,8 +526,8 @@
             if (savedData) {
                 const parsedData = JSON.parse(savedData);
                 state.students = (parsedData.students || initialStudents).map((s, i) => ({ ...s, id: i + 1, present: undefined, payment: null }));
-                state.attendanceHistory = parsedData.attendanceHistory || [];
-                state.paymentsHistory = parsedData.paymentsHistory || parsedData.moneyHistory || []; // Backward compatibility
+                state.attendanceHistory = (parsedData.attendanceHistory || []).map(h => ({ ...h, isImported: h.isImported || false }));
+                state.paymentsHistory = (parsedData.paymentsHistory || parsedData.moneyHistory || []).map(h => ({ ...h, isImported: h.isImported || false })); // Backward compatibility
             } else {
                 state.students = initialStudents.map((s, i) => ({ ...s, id: i + 1, present: undefined, payment: null }));
             }
@@ -788,18 +802,31 @@
         function getHistoryHTML() {
             return `
                 <div class="space-y-6">
-                    <input id="history-search-input" type="text" placeholder="Search history..." class="w-full" value="${state.ui.history.searchText}">
+                    <div class="flex flex-wrap gap-2 items-center">
+                        <input id="history-search-input" type="text" placeholder="Search history..." class="flex-grow" value="${state.ui.history.searchText}">
+                        <button id="import-session-btn" class="soft-btn">
+                            <svg class="h-5 w-5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
+                            <span>Import Session</span>
+                        </button>
+                        <input type="file" id="import-session-input" class="hidden" accept=".json">
+                    </div>
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         <div>
                             <h2 class="text-xl font-bold mb-4">Attendance</h2>
-                            <div id="history-attendance-list" class="space-y-4 max-h-[70vh] overflow-y-auto custom-scrollbar pr-2"></div>
+                            <h3 class="text-lg font-semibold mb-2 text-[var(--text-secondary)]">Saved</h3>
+                            <div id="history-attendance-saved-list" class="space-y-4 max-h-[60vh] overflow-y-auto custom-scrollbar pr-2"></div>
+                            <h3 class="text-lg font-semibold mt-6 mb-2 text-[var(--text-secondary)]">Imported</h3>
+                            <div id="history-attendance-imported-list" class="space-y-4 max-h-[60vh] overflow-y-auto custom-scrollbar pr-2"></div>
                         </div>
                         <div>
                             <h2 class="text-xl font-bold mb-4">Payments History</h2>
-                            <div id="history-payments-list" class="space-y-4 max-h-[70vh] overflow-y-auto custom-scrollbar pr-2"></div>
+                            <h3 class="text-lg font-semibold mb-2 text-[var(--text-secondary)]">Saved</h3>
+                            <div id="history-payments-saved-list" class="space-y-4 max-h-[60vh] overflow-y-auto custom-scrollbar pr-2"></div>
+                            <h3 class="text-lg font-semibold mt-6 mb-2 text-[var(--text-secondary)]">Imported</h3>
+                            <div id="history-payments-imported-list" class="space-y-4 max-h-[60vh] overflow-y-auto custom-scrollbar pr-2"></div>
                         </div>
                     </div>
-                    <div id="history-detail-view" class="mt-6 hidden"></div>
+                    <div id="history-detail-view" class="mt-6"></div>
                 </div>`;
         }
         
@@ -881,10 +908,12 @@
                         <button class="edit-history-btn flex-1 text-sm soft-btn !py-1.5 !px-3 !text-xs">Edit</button>
                         <div class="relative flex-1">
                             <button class="export-history-btn w-full text-sm soft-btn !py-1.5 !px-3 !text-xs">Export</button>
-                            <div class="export-history-options hidden absolute right-0 bottom-full mb-2 w-32 glass-card !p-1 z-20">
+                            <div class="export-history-options hidden absolute right-0 bottom-full mb-2 w-36 glass-card !p-1 z-20">
                                 <a href="#" class="export-history-option block px-3 py-1.5 text-xs rounded-lg hover:bg-[var(--bg-color-2)]" data-format="pdf">PDF</a>
                                 <a href="#" class="export-history-option block px-3 py-1.5 text-xs rounded-lg hover:bg-[var(--bg-color-2)]" data-format="png">PNG</a>
                                 <a href="#" class="export-history-option block px-3 py-1.5 text-xs rounded-lg hover:bg-[var(--bg-color-2)]" data-format="excel">Excel</a>
+                                <div class="border-t my-1 border-[var(--border-color)]"></div>
+                                <a href="#" class="export-history-option block px-3 py-1.5 text-xs rounded-lg hover:bg-[var(--bg-color-2)]" data-format="session_json">Share (JSON)</a>
                             </div>
                         </div>
                         <button class="delete-history-btn flex-none soft-btn !p-1.5 !rounded-lg text-[var(--danger-color)] hover:bg-[var(--danger-bg)]" title="Delete">
@@ -971,20 +1000,37 @@
         }
 
         function renderHistoryLists() {
-            const attendanceListEl = document.getElementById('history-attendance-list');
-            const paymentsListEl = document.getElementById('history-payments-list');
+            const lists = {
+                attSaved: document.getElementById('history-attendance-saved-list'),
+                attImported: document.getElementById('history-attendance-imported-list'),
+                paySaved: document.getElementById('history-payments-saved-list'),
+                payImported: document.getElementById('history-payments-imported-list')
+            };
             const lowerSearchText = state.ui.history.searchText.toLowerCase().trim();
 
-            let filteredAttendance = state.attendanceHistory;
-            let filteredPayments = state.paymentsHistory;
-
-            if (lowerSearchText) {
-                filteredAttendance = state.attendanceHistory.filter(item => Object.values(item).some(val => String(val).toLowerCase().includes(lowerSearchText)));
-                filteredPayments = state.paymentsHistory.filter(item => Object.values(item).some(val => String(val).toLowerCase().includes(lowerSearchText)));
-            }
+            let fullAtt = state.attendanceHistory.filter(item => !lowerSearchText || Object.values(item).some(val => String(val).toLowerCase().includes(lowerSearchText)));
+            let fullPay = state.paymentsHistory.filter(item => !lowerSearchText || Object.values(item).some(val => String(val).toLowerCase().includes(lowerSearchText)));
             
-            if(attendanceListEl) attendanceListEl.innerHTML = filteredAttendance.length > 0 ? filteredAttendance.map(getHistoryCardHTML).join('') : `<p class="text-center text-[var(--text-secondary)] p-2">No attendance history.</p>`;
-            if(paymentsListEl) paymentsListEl.innerHTML = filteredPayments.length > 0 ? filteredPayments.map(getHistoryCardHTML).join('') : `<p class="text-center text-[var(--text-secondary)] p-2">No payments history.</p>`;
+            const attSaved = fullAtt.filter(i => !i.isImported);
+            const attImported = fullAtt.filter(i => i.isImported);
+            const paySaved = fullPay.filter(i => !i.isImported);
+            const payImported = fullPay.filter(i => i.isImported);
+
+            if(lists.attSaved) lists.attSaved.innerHTML = attSaved.length > 0 ? attSaved.map(getHistoryCardHTML).join('') : `<p class="text-center text-[var(--text-secondary)] p-2">No saved attendance history.</p>`;
+            if(lists.attImported) lists.attImported.innerHTML = attImported.length > 0 ? attImported.map(getHistoryCardHTML).join('') : `<p class="text-center text-[var(--text-secondary)] p-2">No imported attendance history.</p>`;
+            if(lists.paySaved) lists.paySaved.innerHTML = paySaved.length > 0 ? paySaved.map(getHistoryCardHTML).join('') : `<p class="text-center text-[var(--text-secondary)] p-2">No saved payments history.</p>`;
+            if(lists.payImported) lists.payImported.innerHTML = payImported.length > 0 ? payImported.map(getHistoryCardHTML).join('') : `<p class="text-center text-[var(--text-secondary)] p-2">No imported payments history.</p>`;
+
+            // Handle visibility of the detail view based on state
+            const detailView = document.getElementById('history-detail-view');
+            if (detailView) {
+                if (state.ui.history.viewingItem) {
+                    detailView.innerHTML = `<div class="glass-card"><div class="flex justify-between items-center mb-4 border-b border-[var(--border-color)] pb-2"><h2 class="text-2xl font-bold">Details</h2><button id="close-history-detail" class="soft-btn !rounded-full !p-2 !text-2xl">&times;</button></div><div class="max-h-[60vh] overflow-y-auto custom-scrollbar p-1"><div class="export-document">${getExportHTML(state.ui.history.viewingItem)}</div></div></div>`;
+                    detailView.scrollIntoView({ behavior: 'smooth' });
+                } else {
+                    detailView.innerHTML = '';
+                }
+            }
         }
         
         function updateAttendanceSummary() {
@@ -1191,6 +1237,12 @@
                     state.ui.payments.customRange = e.target.value;
                 }
             });
+
+            // New listener for single session import
+            const importSessionInput = document.getElementById('import-session-input');
+            if (importSessionInput) {
+                importSessionInput.addEventListener('change', handleImportSession);
+            }
         }
 
         function handleMainContentInput(e) {
@@ -1333,6 +1385,11 @@
                     stateChanged = true;
                     break;
                 case 'cancel-edit-btn': cancelEditing(); break;
+                case 'import-session-btn': document.getElementById('import-session-input').click(); break;
+                case 'close-history-detail':
+                    state.ui.history.viewingItem = null;
+                    renderHistoryLists();
+                    break;
             }
 
             if (tab === 'history') {
@@ -1348,13 +1405,10 @@
                 }
                 const exportOption = e.target.closest('.export-history-option');
                 if (exportOption) {
+                    e.preventDefault();
                     const item = type === 'attendance' ? state.attendanceHistory.find(i => i.id === id) : state.paymentsHistory.find(i => i.id === id);
                     if (item) handleExport(exportOption.dataset.format, item);
                 }
-            }
-            if (e.target.closest('#close-history-detail')) {
-                state.ui.history.viewingItem = null;
-                document.getElementById('history-detail-view').classList.add('hidden');
             }
 
             if(stateChanged) { saveCurrentScrollPositions(); recordState(); debouncedAutosave(); renderCurrentTab(); }
@@ -1386,23 +1440,8 @@
             if(stateChanged) { saveCurrentScrollPositions(); recordState(); debouncedAutosave(); renderCurrentTab(); }
         }
         
-        // --- CORE LOGIC (UNCHANGED) ---
-        function showConfirmation(message, onConfirm) { /* ... original code ... */ }
-        function hideConfirmation() { /* ... original code ... */ }
-        function saveAttendance() { /* ... original code ... */ }
-        function savePaymentsCollection() { /* ... original code ... */ }
-        function handleImportData(event) { /* ... original code ... */ }
-        function viewHistoryDetail(id, type) { /* ... original code ... */ }
-        function deleteHistoryItem(id, type) { /* ... original code ... */ }
-        function startEditingHistoryItem(id, type) { /* ... original code ... */ }
-        function cancelEditing(shouldSwitchTab = true) { /* ... original code ... */ }
-        function getFilterDescription(tab) { /* ... original code ... */ }
-        function handleExport(format, specificItem = null) { /* ... original code ... */ }
-        function getCurrentTabDataForExport() { /* ... original code ... */ }
-        function getExportHTML(item) { /* ... original code ... */ }
-
-        // Copying the original functions to avoid breaking logic
-        showConfirmation = function(message, onConfirm) {
+        // --- CORE LOGIC ---
+        function showConfirmation(message, onConfirm) {
             modalMessage.textContent = message;
             modal.classList.add('visible');
             const confirmBtn = document.getElementById('modal-confirm');
@@ -1410,8 +1449,9 @@
             confirmBtn.addEventListener('click', confirmHandler, { once: true });
             document.getElementById('modal-cancel').addEventListener('click', () => { hideConfirmation(); confirmBtn.removeEventListener('click', confirmHandler); }, {once: true});
         };
-        hideConfirmation = function() { modal.classList.remove('visible'); };
-        saveAttendance = function() {
+        function hideConfirmation() { modal.classList.remove('visible'); };
+
+        function saveAttendance() {
             const now = new Date();
             const takenByEl = document.getElementById('taken-by-input');
             const subjectEl = document.getElementById('subject-input');
@@ -1426,7 +1466,7 @@
                 }
                 cancelEditing(false);
             } else {
-                const session = { id: `att-${Date.now()}`, type: 'attendance', date: now.toLocaleDateString(), time: now.toLocaleTimeString(), takenBy: takenByEl.value || 'N/A', subject: subjectEl.value || 'N/A', records: recordsToSave };
+                const session = { id: `att-${Date.now()}`, type: 'attendance', date: now.toLocaleDateString(), time: now.toLocaleTimeString(), takenBy: takenByEl.value || 'N/A', subject: subjectEl.value || 'N/A', records: recordsToSave, isImported: false };
                 state.attendanceHistory.unshift(session);
                 alert("Attendance saved!");
             }
@@ -1437,7 +1477,8 @@
             state.students.forEach(s => { s.present = undefined; });
             saveState(); recordState(); renderApp();
         };
-        savePaymentsCollection = function() {
+
+        function savePaymentsCollection() {
             const now = new Date();
             const recordsToSave = state.students.filter(s => s.payment).map(({ reg, name, payment }) => ({ reg, name, payment }));
             if (recordsToSave.length === 0) { alert("No payments recorded."); return; }
@@ -1450,7 +1491,7 @@
                  }
                 cancelEditing(false);
             } else {
-                const session = { id: `pay-${Date.now()}`, type: 'payments', date: now.toLocaleDateString(), time: now.toLocaleTimeString(), collector: state.ui.payments.collector || 'N/A', purpose: state.ui.payments.purpose || 'General Collection', records: recordsToSave };
+                const session = { id: `pay-${Date.now()}`, type: 'payments', date: now.toLocaleDateString(), time: now.toLocaleTimeString(), collector: state.ui.payments.collector || 'N/A', purpose: state.ui.payments.purpose || 'General Collection', records: recordsToSave, isImported: false };
                 state.paymentsHistory.unshift(session);
                 alert("Payments collection saved!");
             }
@@ -1461,7 +1502,8 @@
             state.students.forEach(s => { s.payment = null; });
             saveState(); recordState(); renderApp();
         };
-        handleImportData = function(event) {
+        
+        function handleImportData(event) {
             const file = event.target.files[0];
             if (!file) return;
             const reader = new FileReader();
@@ -1470,32 +1512,62 @@
                     const data = JSON.parse(e.target.result);
                     if(!data.students || !data.attendanceHistory) throw new Error("Invalid format");
                     state.students = (data.students || initialStudents).map((s, i) => ({ ...s, id: i + 1, present: undefined, payment: null }));
-                    state.attendanceHistory = data.attendanceHistory || [];
-                    state.paymentsHistory = data.paymentsHistory || data.moneyHistory || [];
+                    state.attendanceHistory = (data.attendanceHistory || []).map(h => ({ ...h, isImported: h.isImported || false }));
+                    state.paymentsHistory = (data.paymentsHistory || data.moneyHistory || []).map(h => ({ ...h, isImported: h.isImported || false }));
                     saveState(); recordState(); renderApp();
                     alert('Data imported successfully!');
                 } catch (error) { alert('Failed to import data.'); console.error("Import error:", error); }
             };
             reader.readAsText(file);
         };
-        viewHistoryDetail = function(id, type) {
+        
+        function handleImportSession(event) {
+            const file = event.target.files[0];
+            if (!file) return;
+            const reader = new FileReader();
+            reader.onload = function(e) {
+                try {
+                    const item = JSON.parse(e.target.result);
+                    if (!item.id || !item.type || !item.records) throw new Error("Invalid session file format.");
+                    
+                    item.isImported = true;
+                    item.id = `imp-${item.type}-${Date.now()}`; // Assign new unique ID
+
+                    if (item.type === 'attendance') {
+                        state.attendanceHistory.unshift(item);
+                    } else if (item.type === 'payments') {
+                        state.paymentsHistory.unshift(item);
+                    } else {
+                        throw new Error("Unknown session type in file.");
+                    }
+                    saveState(); recordState(); renderHistoryLists();
+                    alert('Session imported successfully!');
+                } catch (error) {
+                    alert(`Failed to import session: ${error.message}`);
+                    console.error("Session import error:", error);
+                } finally {
+                    event.target.value = '';
+                }
+            };
+            reader.readAsText(file);
+        }
+
+        function viewHistoryDetail(id, type) {
             const item = type === 'attendance' ? state.attendanceHistory.find(i => i.id === id) : state.paymentsHistory.find(i => i.id === id);
             if (!item) return;
             state.ui.history.viewingItem = item;
-            const detailView = document.getElementById('history-detail-view');
-            detailView.classList.remove('hidden');
-            detailView.innerHTML = `<div class="glass-card"><div class="flex justify-between items-center mb-4 border-b border-[var(--border-color)] pb-2"><h2 class="text-2xl font-bold">Details</h2><button id="close-history-detail" class="text-2xl font-bold">&times;</button></div><div id="history-export-content" class="max-h-[60vh] overflow-y-auto custom-scrollbar p-1"></div></div>`;
-            document.getElementById('history-export-content').innerHTML = getExportHTML(item);
-            detailView.scrollIntoView({ behavior: 'smooth' });
+            renderHistoryLists();
         };
-        deleteHistoryItem = function(id, type) {
+
+        function deleteHistoryItem(id, type) {
             showConfirmation("Delete this record permanently?", () => {
                 if (type === 'attendance') state.attendanceHistory = state.attendanceHistory.filter(item => item.id !== id);
                 else state.paymentsHistory = state.paymentsHistory.filter(item => item.id !== id);
                 saveState(); recordState(); renderApp();
             });
         };
-        startEditingHistoryItem = function(id, type) {
+
+        function startEditingHistoryItem(id, type) {
             const session = type === 'attendance' ? state.attendanceHistory.find(i => i.id === id) : state.paymentsHistory.find(i => i.id === id);
             if (!session) return;
             state.ui.history.editingSession = { type, id };
@@ -1510,13 +1582,15 @@
             if (type === 'payments') { state.ui.payments.purpose = session.purpose; state.ui.payments.collector = session.collector; }
             switchTab(type);
         };
-        cancelEditing = function(shouldSwitchTab = true) {
+
+        function cancelEditing(shouldSwitchTab = true) {
             state.ui.history.editingSession = { type: null, id: null };
             state.students.forEach(s => { s.present = undefined; s.payment = null; });
              if (shouldSwitchTab) switchTab(state.currentTab);
              else renderApp();
         };
-        getFilterDescription = function(tab) {
+
+        function getFilterDescription(tab) {
             const { filterType, filterRangePreset, customRange } = state.ui[tab];
             if (filterType === 'all') return 'All Students';
             const typeText = filterType === 'reg' ? 'Reg No.' : 'Index No.';
@@ -1528,14 +1602,19 @@
             }
             return `${typeText} - ${rangeText}`;
         };
-        handleExport = function(format, specificItem = null) {
+
+        function handleExport(format, specificItem = null) {
             const itemToExport = specificItem || getCurrentTabDataForExport();
             if (!itemToExport) { alert("No data to export."); return; }
-            const exportContentEl = document.getElementById('export-content');
-            exportContentEl.innerHTML = getExportHTML(itemToExport);
+            
+            const exportContentWrapper = document.getElementById('export-content-wrapper');
+            exportContentWrapper.innerHTML = `<div class="export-document">${getExportHTML(itemToExport)}</div>`;
+            const exportContentEl = exportContentWrapper.firstChild;
+
             const filename = `${itemToExport.type}-${(itemToExport.subject || itemToExport.purpose).replace(/ /g, '_')}-${itemToExport.date.replace(/\//g, '-')}`;
+
             if (format === 'pdf') {
-                html2canvas(exportContentEl, { scale: 3 }).then(canvas => {
+                html2canvas(exportContentEl, { scale: 3, useCORS: true, backgroundColor: '#ffffff' }).then(canvas => {
                     const imgData = canvas.toDataURL('image/png');
                     const pdf = new jsPDF('p', 'mm', 'a4');
                     const pdfWidth = pdf.internal.pageSize.getWidth();
@@ -1547,7 +1626,7 @@
                     pdf.save(`${filename}.pdf`);
                 });
             } else if (format === 'png') {
-                 html2canvas(exportContentEl, { scale: 2 }).then(canvas => { const link = document.createElement('a'); link.href = canvas.toDataURL('image/png'); link.download = `${filename}.png`; link.click(); });
+                 html2canvas(exportContentEl, { scale: 2, useCORS: true, backgroundColor: '#ffffff' }).then(canvas => { const link = document.createElement('a'); link.href = canvas.toDataURL('image/png'); link.download = `${filename}.png`; link.click(); });
             } else if (format === 'excel') {
                 const wb = XLSX.utils.book_new();
                 let ws_data = [];
@@ -1560,24 +1639,45 @@
                     if (presentRecords.length > 0) { ws_data.push(['Present Students'], ['Reg No', 'Name']); presentRecords.forEach(r => ws_data.push([r.reg, r.name])); ws_data.push([]); }
                     if (absentRecords.length > 0) { ws_data.push(['Absent Students'], ['Reg No', 'Name']); absentRecords.forEach(r => ws_data.push([r.reg, r.name])); }
                 } else if (itemToExport.type === 'payments') {
-                    const records = itemToExport.studentRecords || itemToExport.records.map(r => ({...r, payment: r.payment}));
-                    const paidRecords = records.filter(r => r.payment), unpaidRecords = records.filter(r => !r.payment);
+                    const records = itemToExport.studentRecords || itemToExport.records;
+                    const paidRecords = records.filter(r => r.payment);
+                    const unpaidRecords = records.filter(r => !r.payment);
+                    const allStudentsInView = records;
                     const totalCollected = paidRecords.reduce((sum, r) => sum + parseFloat(r.payment.amount || 0), 0);
+                    const defaultAmount = parseFloat(itemToExport.defaultAmount || 0);
+                    const totalExpected = defaultAmount > 0 ? allStudentsInView.length * defaultAmount : totalCollected;
+                    const dueAmount = Math.max(0, totalExpected - totalCollected);
+                    const cashTotal = paidRecords.filter(s => s.payment.method === 'Cash').reduce((sum, s) => sum + (parseFloat(s.payment.amount) || 0), 0);
+                    const ePayTotal = paidRecords.filter(s => s.payment.method === 'ePay').reduce((sum, s) => sum + (parseFloat(s.payment.amount) || 0), 0);
+
                     ws_data.push([`Payments: ${itemToExport.purpose || 'Current Collection'}`], [`Date: ${itemToExport.date}`, `Time: ${itemToExport.time}`]);
                     if (itemToExport.filterDescription) ws_data.push([`Filter: ${itemToExport.filterDescription}`]);
-                    ws_data.push([], [`Total Students: ${records.length}`, `Paid: ${paidRecords.length}`, `Unpaid: ${unpaidRecords.length}`], [`Total Collected: ₹${totalCollected.toFixed(2)}`], []);
+                    ws_data.push([], ["Summary"]);
+                    ws_data.push(["Budget", `₹${totalExpected.toFixed(2)}`]);
+                    ws_data.push(["Received", `₹${totalCollected.toFixed(2)}`]);
+                    ws_data.push(["Due", `₹${dueAmount.toFixed(2)}`]);
+                    ws_data.push(["Paid/Unpaid", `${paidRecords.length} / ${unpaidRecords.length}`]);
+                    ws_data.push(["Cash", `₹${cashTotal.toFixed(2)}`]);
+                    ws_data.push(["ePay", `₹${ePayTotal.toFixed(2)}`]);
+                    ws_data.push([]);
+
                     if (paidRecords.length > 0) { ws_data.push(['Paid Students'], ['Reg No', 'Name', 'Amount (₹)', 'Method']); paidRecords.forEach(r => ws_data.push([r.reg, r.name, r.payment.amount, r.payment.method])); ws_data.push([]); }
-                    if (unpaidRecords.length > 0) { ws_data.push(['Unpaid Students'], ['Reg No', 'Name']); unpaidRecords.forEach(r => ws_data.push([r.reg, r.name])); }
+                    if (unpaidRecords.length > 0 && itemToExport.studentRecords) { ws_data.push(['Unpaid Students'], ['Reg No', 'Name']); unpaidRecords.forEach(r => ws_data.push([r.reg, r.name])); }
                 }
                 const ws = XLSX.utils.aoa_to_sheet(ws_data); XLSX.utils.book_append_sheet(wb, ws, sheetName); XLSX.writeFile(wb, `${filename}.xlsx`);
             } else if (format === 'json') {
                 const appData = { students: state.students.map(({ id, present, payment, ...rest }) => rest), attendanceHistory: state.attendanceHistory, paymentsHistory: state.paymentsHistory };
                 const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(appData, null, 2));
                 const a = document.createElement('a'); a.href = dataStr; a.download = "student_marker_backup.json"; a.click(); a.remove();
+            } else if (format === 'session_json') {
+                const sessionData = JSON.stringify(itemToExport, null, 2);
+                const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(sessionData);
+                const a = document.createElement('a'); a.href = dataStr; a.download = `${filename}_session.json`; a.click(); a.remove();
             }
             menuOptions.classList.add('hidden');
         };
-        getCurrentTabDataForExport = function() {
+
+        function getCurrentTabDataForExport() {
             const now = new Date(); const tab = state.currentTab;
             if (tab === 'attendance' || tab === 'payments') {
                 const filteredStudents = getRangeFilteredStudents(tab);
@@ -1585,32 +1685,61 @@
                 else return { type: 'payments', date: now.toLocaleDateString(), time: now.toLocaleTimeString(), collector: state.ui.payments.collector || 'N/A', purpose: state.ui.payments.purpose || 'Current Collection', studentRecords: filteredStudents.map(s => ({ reg: s.reg, name: s.name, payment: s.payment })), defaultAmount: state.ui.payments.defaultAmount || 0, filterDescription: getFilterDescription('payments') };
             } return null;
         };
-        getExportHTML = function(item) {
-             let metaInfo = `<span>Date: ${item.date} at ${item.time}</span><br>`;
-             if (item.takenBy) metaInfo += `<span>Taken by: ${item.takenBy}</span><br>`; if (item.collector) metaInfo += `<span>Collected by: ${item.collector}</span><br>`; if (item.filterDescription) metaInfo += `<span>Filter: <strong>${item.filterDescription}</strong></span>`;
-             let content = `<h1>${item.type === 'attendance' ? 'Attendance Report' : 'Payments Report'}</h1><h2>${item.subject || item.purpose}</h2><div class="meta-info">${metaInfo}</div>`;
+
+        function getExportHTML(item) {
+            let metaInfo = `<div class="meta-info"><strong>Date:</strong> ${item.date} at ${item.time}<br>`;
+            if (item.takenBy) metaInfo += `<strong>Taken by:</strong> ${item.takenBy}<br>`;
+            if (item.collector) metaInfo += `<strong>Collected by:</strong> ${item.collector}<br>`;
+            if (item.filterDescription) metaInfo += `<strong>Filter:</strong> ${item.filterDescription}`;
+            metaInfo += `</div>`;
+
+            let content = `<h1>${item.type === 'attendance' ? 'Attendance Report' : 'Payments Report'}</h1><h2>${item.subject || item.purpose}</h2>${metaInfo}`;
+            
             if (item.type === 'attendance') {
-                const present = item.records.filter(r => r.present).length, absent = item.records.length - present;
-                content += `<h2>Summary</h2><p class="summary-item">Total: <strong>${item.records.length}</strong></p><p class="summary-item">Present: <strong>${present}</strong></p><p class="summary-item">Absent: <strong>${absent}</strong></p>`;
-                content += `<h2>Present (${present})</h2>`;
+                const present = item.records.filter(r => r.present).length;
+                const absent = item.records.length - present;
+                content += `<div class="summary-section">
+                    <div class="summary-item"><div class="label">Total</div><div class="value">${item.records.length}</div></div>
+                    <div class="summary-item"><div class="label">Present</div><div class="value present">${present}</div></div>
+                    <div class="summary-item"><div class="label">Absent</div><div class="value absent">${absent}</div></div>
+                </div>`;
+                content += `<h3>Present (${present})</h3>`;
                 if(present > 0) { content += `<table><thead><tr><th>Reg No</th><th>Name</th></tr></thead><tbody>${item.records.filter(r => r.present).map(r => `<tr><td>${r.reg}</td><td>${r.name}</td></tr>`).join('')}</tbody></table>`; } else { content += `<p>None</p>`; }
-                content += `<h2>Absent (${absent})</h2>`;
+                content += `<h3>Absent (${absent})</h3>`;
                 if(absent > 0) { content += `<table><thead><tr><th>Reg No</th><th>Name</th></tr></thead><tbody>${item.records.filter(r => !r.present).map(r => `<tr><td>${r.reg}</td><td>${r.name}</td></tr>`).join('')}</tbody></table>`; } else { content += `<p>None</p>`; }
             } else if (item.type === 'payments') {
-                const records = item.studentRecords || item.records, allStudentsInView = item.studentRecords || state.students.filter(s => records.some(r => r.reg === s.reg));
-                const paidRecords = allStudentsInView.filter(r => r.payment), unpaidRecords = allStudentsInView.filter(r => !r.payment);
+                const isCurrentView = !!item.studentRecords;
+                const allRecords = item.studentRecords || item.records;
+                const paidRecords = allRecords.filter(r => r.payment);
+                const unpaidRecords = isCurrentView ? allRecords.filter(r => !r.payment) : [];
+
                 const totalCollected = paidRecords.reduce((sum, r) => sum + parseFloat(r.payment.amount || 0), 0);
-                const defaultAmount = parseFloat(item.defaultAmount || 0); const totalExpected = defaultAmount > 0 ? allStudentsInView.length * defaultAmount : 'N/A';
-                content += `<h2>Summary</h2><div class="summary-item">Students in View: <strong>${allStudentsInView.length}</strong></div>`;
-                if (defaultAmount > 0) content += `<div class="summary-item">Expected: <strong>₹${totalExpected.toFixed(2)}</strong></div>`;
-                content += `<div class="summary-item">Collected: <strong>₹${totalCollected.toFixed(2)}</strong></div>`;
-                content += `<h2>Paid (${paidRecords.length})</h2>`;
+                const defaultAmount = parseFloat(item.defaultAmount || 0);
+                const totalExpected = (isCurrentView && defaultAmount > 0) ? allRecords.length * defaultAmount : totalCollected;
+                const dueAmount = Math.max(0, totalExpected - totalCollected);
+                const cashTotal = paidRecords.filter(s => s.payment.method === 'Cash').reduce((sum, s) => sum + (parseFloat(s.payment.amount) || 0), 0);
+                const ePayTotal = paidRecords.filter(s => s.payment.method === 'ePay').reduce((sum, s) => sum + (parseFloat(s.payment.amount) || 0), 0);
+
+                content += `<div class="summary-section">
+                    <div class="summary-item"><div class="label">Budget</div><div class="value">₹${totalExpected.toFixed(2)}</div></div>
+                    <div class="summary-item"><div class="label">Received</div><div class="value received">₹${totalCollected.toFixed(2)}</div></div>
+                    <div class="summary-item"><div class="label">Due</div><div class="value due">₹${dueAmount.toFixed(2)}</div></div>
+                    <div class="summary-item"><div class="label">Paid/Unpaid</div><div class="value"><span class="present">${paidRecords.length}</span> / <span class="absent">${unpaidRecords.length}</span></div></div>
+                    <div class="summary-item"><div class="label">Cash</div><div class="value">₹${cashTotal.toFixed(2)}</div></div>
+                    <div class="summary-item"><div class="label">ePay</div><div class="value">₹${ePayTotal.toFixed(2)}</div></div>
+                </div>`;
+                
+                content += `<h3>Paid (${paidRecords.length})</h3>`;
                 if(paidRecords.length > 0) { content += `<table><thead><tr><th>Reg No</th><th>Name</th><th>Amount (₹)</th><th>Method</th></tr></thead><tbody>${paidRecords.map(r => `<tr><td>${r.reg}</td><td>${r.name}</td><td>${r.payment.amount}</td><td>${r.payment.method}</td></tr>`).join('')}</tbody></table>`; } else { content += `<p>None</p>`; }
-                content += `<h2>Pending (${unpaidRecords.length})</h2>`;
-                if(unpaidRecords.length > 0) { content += `<table><thead><tr><th>Reg No</th><th>Name</th></tr></thead><tbody>${unpaidRecords.map(r => `<tr><td>${r.reg}</td><td>${r.name}</td></tr>`).join('')}</tbody></table>`; } else { content += `<p>None</p>`; }
+                
+                if (isCurrentView) {
+                    content += `<h3>Pending (${unpaidRecords.length})</h3>`;
+                    if(unpaidRecords.length > 0) { content += `<table><thead><tr><th>Reg No</th><th>Name</th></tr></thead><tbody>${unpaidRecords.map(r => `<tr><td>${r.reg}</td><td>${r.name}</td></tr>`).join('')}</tbody></table>`; } else { content += `<p>None</p>`; }
+                }
             }
-            content += `<div class="footer">Generated on ${new Date().toLocaleString()}</div>`; return content;
-        };
+            content += `<div class="footer">Generated by ATTEND. & MC app on ${new Date().toLocaleString()}</div>`;
+            return content;
+        }
         
         // --- FINAL BOOTSTRAP ---
         init();
