@@ -1,8 +1,9 @@
+<!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student List Marker</title>
+    <title>Rostedge Pro</title>
     <!-- External Libraries via CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
@@ -13,16 +14,17 @@
     <style>
         :root {
             /* Light Theme */
-            --bg-color: #eef2ff; /* indigo-50 */
+            --bg-color-start: #ffffff;
+            --bg-color-end: #eef2ff; /* indigo-50 */
+            --bg-color: #eef2ff; /* Fallback */
             --bg-color-2: #e0e7ff; /* indigo-100 */
             --text-primary: #1e1b4b; /* indigo-950 */
             --text-secondary: #4338ca; /* indigo-700 */
             --accent-color: #4f46e5; /* indigo-600 */
             --accent-glow: rgba(79, 70, 229, 0.4);
-            --card-bg: rgba(255, 255, 255, 0.6);
+            --card-bg: rgba(255, 255, 255, 0.75);
             --border-color: rgba(199, 210, 254, 0.8); /* indigo-200 */
-            --soft-shadow-1: 6px 6px 12px #d9ddef;
-            --soft-shadow-2: -6px -6px 12px #ffffff;
+            --shadow-color: rgba(67, 56, 202, 0.15);
             --icon-color: #312e81; /* indigo-900 */
             --icon-color-active: #4f46e5;
             --success-color: #16a34a; /* green-600 */
@@ -32,16 +34,18 @@
         }
 
         [data-theme="dark"] {
-            --bg-color: #111827; /* gray-900 */
-            --bg-color-2: #1f2937; /* gray-800 */
+            /* Dark Theme as requested by user */
+            --bg-color-start: #111827; /* gray-900 */
+            --bg-color-end: #1f2937; /* gray-800 */
+            --bg-color: #111827; /* Fallback */
+            --bg-color-2: #374151; /* gray-700 */
             --text-primary: #f9fafb; /* gray-50 */
             --text-secondary: #9ca3af; /* gray-400 */
             --accent-color: #818cf8; /* indigo-400 */
             --accent-glow: rgba(129, 140, 248, 0.4);
-            --card-bg: rgba(55, 65, 81, 0.5); /* gray-700 with alpha */
+            --card-bg: rgba(31, 41, 55, 0.5); /* gray-800 with 50% alpha, as requested */
             --border-color: rgba(75, 85, 99, 0.6); /* gray-600 with alpha */
-            --soft-shadow-1: 6px 6px 12px #0b0f1a;
-            --soft-shadow-2: -6px -6px 12px #172134;
+            --shadow-color: rgba(0, 0, 0, 0.3);
             --icon-color: #d1d5db; /* gray-300 */
             --icon-color-active: #818cf8;
             --success-color: #4ade80; /* green-400 */
@@ -54,31 +58,33 @@
         body {
             font-family: 'Inter', sans-serif;
             background-color: var(--bg-color);
+            background-image: linear-gradient(135deg, var(--bg-color-start), var(--bg-color-end));
             color: var(--text-primary);
             transition: background-color 0.3s ease, color 0.3s ease;
+            min-height: 100vh;
         }
         
         .app-container {
             padding-bottom: 9rem; /* Increased space for bottom nav */
         }
         
-        /* Glassmorphism & Soft UI Components */
+        /* Glassmorphism & Modern UI Components */
         .glass-card {
             background: var(--card-bg);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
-            border-radius: 1.25rem;
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
+            border-radius: 1.5rem;
             border: 1px solid var(--border-color);
-            box-shadow: 0 8px 32px 0 rgba(0, 0, 0, 0.1);
+            box-shadow: 0 8px 32px 0 var(--shadow-color);
             padding: 1.5rem;
         }
 
         .soft-btn {
-            background: var(--bg-color);
+            background: var(--bg-color-2);
             color: var(--text-secondary);
-            border: 1px solid transparent;
-            border-radius: 0.75rem;
-            box-shadow: var(--soft-shadow-1), var(--soft-shadow-2);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
+            box-shadow: 0 1px 3px 0 var(--shadow-color);
             transition: all 0.2s ease-in-out;
             cursor: pointer;
             font-weight: 600;
@@ -89,43 +95,45 @@
             gap: 0.5rem;
         }
         .soft-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 4px 8px 0 var(--shadow-color);
             color: var(--accent-color);
-            border-color: var(--border-color);
         }
         .soft-btn:active, .soft-btn.active {
             font-weight: 700;
             color: var(--accent-color);
-            background-color: var(--bg-color-2);
+            background-color: color-mix(in srgb, var(--bg-color-2) 80%, black 20%);
             box-shadow: none;
+            transform: translateY(0);
             outline: 2px solid var(--accent-glow);
         }
         .soft-btn:disabled {
             opacity: 0.6;
             cursor: not-allowed;
             box-shadow: none;
+            transform: none;
         }
         
         input[type="text"], input[type="number"], input[type="file"], select {
-            background-color: var(--bg-color-2);
-            border: 1px solid transparent;
-            border-radius: 0.75rem;
+            background-color: var(--bg-color);
+            border: 1px solid var(--border-color);
+            border-radius: 1rem;
             padding: 0.75rem;
             width: 100%;
             color: var(--text-primary);
-            box-shadow: inset 2px 2px 4px color-mix(in srgb, var(--bg-color) 70%, black 30%), inset -2px -2px 4px color-mix(in srgb, var(--bg-color) 70%, white 30%);
             transition: box-shadow 0.2s, border-color 0.2s;
         }
         input:focus, select:focus {
             outline: none;
             border-color: var(--accent-color);
-            box-shadow: 0 0 0 2px var(--accent-glow);
+            box-shadow: 0 0 0 3px var(--accent-glow);
         }
         
         /* Layout: Header & Bottom Nav */
         .app-header {
             background: var(--card-bg);
-            backdrop-filter: blur(12px);
-            -webkit-backdrop-filter: blur(12px);
+            backdrop-filter: blur(16px);
+            -webkit-backdrop-filter: blur(16px);
         }
 
         .bottom-nav {
@@ -134,25 +142,21 @@
         .nav-btn {
             display: flex; flex-direction: column; align-items: center; gap: 4px;
             color: var(--icon-color); font-weight: 500; font-size: 0.75rem;
-            transition: all 0.2s ease; position: relative; padding: 8px; border-radius: 12px;
+            transition: all 0.2s ease; position: relative; padding: 8px 16px; border-radius: 99px;
+            -webkit-tap-highlight-color: transparent;
         }
         .nav-btn.active {
             color: var(--icon-color-active);
             font-weight: 700;
         }
         .nav-btn.active::after {
-            content: '';
-            position: absolute; bottom: -4px;
-            width: 8px; height: 8px;
-            background-color: var(--accent-color);
-            border-radius: 50%;
-            box-shadow: 0 0 10px var(--accent-glow);
+            content: none;
         }
 
         /* Functional Summary Buttons */
         .summary-btn {
             padding: 0.5rem;
-            border-radius: 0.75rem;
+            border-radius: 1rem;
             cursor: pointer;
             transition: all 0.2s ease;
             border: 2px solid transparent;
@@ -170,10 +174,6 @@
         .summary-btn[data-status-filter="present"].active { border-color: var(--success-color); }
         .summary-btn[data-status-filter="absent"].active { border-color: var(--danger-color); }
 
-        /* Animations */
-        @keyframes fadeIn { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: translateY(0); } }
-        .fade-in { animation: fadeIn 0.5s ease-out forwards; }
-        
         /* Custom scrollbar */
         .custom-scrollbar::-webkit-scrollbar { width: 6px; }
         .custom-scrollbar::-webkit-scrollbar-track { background: transparent; }
@@ -229,11 +229,12 @@
         /* Redesign Styles */
         .control-group {
             border: 1px solid var(--border-color);
-            border-radius: 1rem;
+            border-radius: 1.25rem;
             padding: 1rem;
             display: flex;
             flex-direction: column;
             gap: 0.75rem;
+            background-color: var(--bg-color);
         }
         .search-container {
             position: relative;
@@ -242,7 +243,7 @@
             width: 100%;
         }
         .search-container input {
-            padding-right: 8.5rem !important;
+            padding-right: 6.5rem !important;
         }
         .search-icons {
             position: absolute;
@@ -252,11 +253,11 @@
             display: flex;
             align-items: center;
             gap: 0.25rem;
-            background-color: var(--bg-color-2);
+            background-color: var(--bg-color);
         }
         .search-clear-btn {
             position: absolute;
-            right: 6.25rem;
+            right: 5.25rem;
             top: 50%;
             transform: translateY(-50%);
             color: var(--icon-color);
@@ -270,13 +271,13 @@
             justify-content: center;
         }
         .search-clear-btn:hover {
-            background-color: var(--bg-color);
+            background-color: var(--bg-color-2);
         }
         .search-mode-btn-inner {
             background: transparent;
             color: var(--text-secondary);
             border: 1px solid transparent;
-            border-radius: 0.5rem;
+            border-radius: 0.75rem;
             box-shadow: none;
             transition: all 0.2s ease-in-out;
             cursor: pointer;
@@ -293,7 +294,7 @@
         .search-mode-btn-inner.active {
             color: var(--accent-color);
             background-color: var(--bg-color);
-            box-shadow: inset 2px 2px 4px color-mix(in srgb, var(--bg-color) 70%, black 30%), inset -2px -2px 4px color-mix(in srgb, var(--bg-color) 70%, white 30%);
+            box-shadow: 0 1px 3px 0 var(--shadow-color);
         }
         #reset-attendance-btn svg, #reset-payments-btn svg {
             color: var(--danger-color);
@@ -307,8 +308,8 @@
         <header class="app-header sticky top-0 z-40 p-4">
             <div class="container mx-auto flex justify-between items-center">
                 <div>
-                    <h1 id="app-title" class="text-xl font-bold transition-all duration-300">Attendance</h1>
-                    <p id="total-students-header" class="text-sm text-gray-500">Available: 0</p>
+                    <h1 id="app-title" class="text-xl font-bold transition-all duration-300">Rostedge Pro</h1>
+                    <p id="page-subtitle" class="text-sm text-gray-500"></p>
                 </div>
                 <div class="flex items-center gap-2">
                     <button id="undo-history-btn" class="soft-btn rounded-full !p-2.5 disabled:opacity-50" disabled title="Undo">
@@ -354,11 +355,15 @@
             <span>Attendance</span>
         </button>
         <button class="nav-btn" data-tab="payments">
-            <svg class="h-6 w-6 pointer-events-none" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125-1.125h-15c-.621 0-1.125-.504-1.125-1.125v-9.75c0-.621.504-1.125 1.125-1.125h1.5" /></svg>
+            <svg class="h-6 w-6 pointer-events-none" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" d="M2.25 8.25h19.5M2.25 9h19.5m-16.5 5.25h6m-6 2.25h3m-3.75 3h15a2.25 2.25 0 002.25-2.25V6.75A2.25 2.25 0 0019.5 4.5h-15A2.25 2.25 0 002.25 6.75v10.5A2.25 2.25 0 004.5 21z" />
+            </svg>
             <span>Payments</span>
         </button>
         <button class="nav-btn" data-tab="history">
-            <svg class="h-6 w-6 pointer-events-none" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" /></svg>
+            <svg class="h-6 w-6 pointer-events-none" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor">
+                <path stroke-linecap="round" stroke-linejoin="round" d="M12 6v6h4.5m4.5 0a9 9 0 11-18 0 9 9 0 0118 0z" />
+            </svg>
             <span>History</span>
         </button>
     </nav>
@@ -457,7 +462,7 @@
 
         const { jsPDF } = window.jspdf;
         const mainContent = document.getElementById('main-content');
-        const totalStudentsHeader = document.getElementById('total-students-header');
+        const pageSubtitleEl = document.getElementById('page-subtitle');
         const modal = document.getElementById('confirmation-modal');
         const modalMessage = document.getElementById('modal-message');
         const menuBtn = document.getElementById('menu-btn');
@@ -565,10 +570,10 @@
             recordState(); // Initial state for history
             renderApp();
             setupEventListeners();
+            switchTab(state.currentTab);
         }
 
         function renderApp() {
-            totalStudentsHeader.textContent = `Available: ${state.students.length}`;
             renderCurrentTab();
         }
         
@@ -576,7 +581,7 @@
             state.ui.history.viewingItem = null;
             state.currentTab = tabName;
 
-            appTitleEl.textContent = tabName.charAt(0).toUpperCase() + tabName.slice(1);
+            pageSubtitleEl.textContent = `${tabName.charAt(0).toUpperCase() + tabName.slice(1)} | ${state.students.length} Students`;
             
             document.querySelectorAll('.nav-btn').forEach(btn => {
                 btn.classList.toggle('active', btn.dataset.tab === tabName);
@@ -594,9 +599,9 @@
             }
             mainContent.innerHTML = content;
             // Post-render updates
+            if (state.currentTab === 'history') renderHistoryLists();
             if (state.currentTab === 'attendance') updateAttendanceList();
             if (state.currentTab === 'payments') updatePaymentsList();
-            if (state.currentTab === 'history') renderHistoryLists();
         }
 
         function saveCurrentScrollPositions() {
@@ -637,6 +642,10 @@
 
         // --- TEMPLATES (Rewritten for new UI) ---
         
+        function getHistoryHTML() {
+            return getFullHistorySectionHTML();
+        }
+
         function getEditingBannerHTML(session) {
             return `
                 <div class="bg-[var(--accent-glow)] p-4 rounded-2xl mb-4 flex justify-between items-center text-sm">
@@ -803,9 +812,12 @@
                 </div>`;
         }
 
-        function getHistoryHTML() {
+        function getFullHistorySectionHTML() {
             return `
-                <div class="space-y-6">
+                <div class="space-y-6 glass-card" id="history-section">
+                    <div class="flex justify-between items-center">
+                         <h2 class="text-xl font-bold">History Management</h2>
+                    </div>
                     <div class="flex flex-wrap gap-2 items-center">
                         <input id="history-search-input" type="text" placeholder="Search history..." class="flex-grow" value="${state.ui.history.searchText}">
                         <button id="import-session-btn" class="soft-btn">
@@ -815,17 +827,17 @@
                     </div>
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         <div>
-                            <h2 class="text-xl font-bold mb-4">Attendance</h2>
-                            <h3 class="text-lg font-semibold mb-2 text-[var(--text-secondary)]">Saved</h3>
+                            <h3 class="text-lg font-bold mb-4">Attendance</h3>
+                            <h4 class="text-md font-semibold mb-2 text-[var(--text-secondary)]">Saved</h4>
                             <div id="history-attendance-saved-list" class="space-y-4 max-h-[60vh] overflow-y-auto custom-scrollbar pr-2"></div>
-                            <h3 class="text-lg font-semibold mt-6 mb-2 text-[var(--text-secondary)]">Imported</h3>
+                            <h4 class="text-md font-semibold mt-6 mb-2 text-[var(--text-secondary)]">Imported</h4>
                             <div id="history-attendance-imported-list" class="space-y-4 max-h-[60vh] overflow-y-auto custom-scrollbar pr-2"></div>
                         </div>
                         <div>
-                            <h2 class="text-xl font-bold mb-4">Payments History</h2>
-                            <h3 class="text-lg font-semibold mb-2 text-[var(--text-secondary)]">Saved</h3>
+                            <h3 class="text-lg font-bold mb-4">Payments History</h3>
+                            <h4 class="text-md font-semibold mb-2 text-[var(--text-secondary)]">Saved</h4>
                             <div id="history-payments-saved-list" class="space-y-4 max-h-[60vh] overflow-y-auto custom-scrollbar pr-2"></div>
-                            <h3 class="text-lg font-semibold mt-6 mb-2 text-[var(--text-secondary)]">Imported</h3>
+                            <h4 class="text-md font-semibold mt-6 mb-2 text-[var(--text-secondary)]">Imported</h4>
                             <div id="history-payments-imported-list" class="space-y-4 max-h-[60vh] overflow-y-auto custom-scrollbar pr-2"></div>
                         </div>
                     </div>
@@ -969,14 +981,6 @@
         }
 
         // --- RENDERERS & UPDATERS ---
-        function applyStaggeredAnimation(listEl, selector) {
-            const cards = listEl.querySelectorAll(selector);
-            cards.forEach((card, index) => {
-                card.style.animationDelay = `${index * 40}ms`;
-                card.classList.add('fade-in');
-            });
-        }
-        
         function updateAttendanceList() {
             const studentsToDisplay = getFilteredStudents('attendance');
             const listEl = document.getElementById('attendance-list');
@@ -986,7 +990,6 @@
                 : `<p class="col-span-full text-center text-[var(--text-secondary)] py-8">No students match.</p>`;
             
             updateAttendanceSummary();
-            applyStaggeredAnimation(listEl, '.student-card');
             if (listEl && savedScrollPositions.attendance > 0) listEl.scrollTop = savedScrollPositions.attendance;
         }
 
@@ -999,7 +1002,6 @@
                 : `<p class="col-span-full text-center text-[var(--text-secondary)] py-8">No students match.</p>`;
 
              updatePaymentsSummary();
-             applyStaggeredAnimation(listEl, '.student-card-payments');
              if (listEl && savedScrollPositions.payments > 0) listEl.scrollTop = savedScrollPositions.payments;
         }
 
@@ -1253,6 +1255,14 @@
             const tab = state.currentTab;
             const target = e.target;
             const targetId = target.id;
+            
+            if (targetId === 'history-search-input') {
+                state.ui.history.searchText = target.value;
+                renderHistoryLists();
+                return;
+            }
+
+            if (tab === 'history') return;
 
             if (targetId === `${tab}-search-input`) {
                 state.ui[tab].searchText = target.value;
@@ -1263,11 +1273,7 @@
                 else if (tab === 'payments') updatePaymentsList();
                 return;
             }
-            if (targetId === 'history-search-input') {
-                state.ui.history.searchText = target.value;
-                renderHistoryLists();
-                return;
-            }
+
             if (targetId === `${tab}-custom-range`) {
                 state.ui[tab].customRange = target.value;
                 if (state.ui[tab].filterRangePreset === 'custom') {
@@ -1290,6 +1296,43 @@
         function handleMainContentClick(e) {
             const tab = state.currentTab;
             let stateChanged = false;
+
+            if (tab === 'history') {
+                const historySection = e.target.closest('#history-section');
+                if (historySection) {
+                    if (e.target.closest('#import-session-btn')) {
+                         document.getElementById('import-session-input').click();
+                         return;
+                    }
+                    if (e.target.closest('#close-history-detail')) {
+                        state.ui.history.viewingItem = null;
+                        renderHistoryLists();
+                        return;
+                    }
+                    const historyCard = e.target.closest('[data-id]');
+                    if (historyCard) {
+                        const { id, type } = historyCard.dataset;
+                        if (e.target.closest('.view-history-btn')) { viewHistoryDetail(id, type); return; }
+                        if (e.target.closest('.delete-history-btn')) { deleteHistoryItem(id, type); return; }
+                        if (e.target.closest('.edit-history-btn')) { startEditingHistoryItem(id, type); return; }
+                        if (e.target.closest('.export-history-btn')) {
+                            e.stopPropagation();
+                            historyCard.querySelector('.export-history-options')?.classList.toggle('hidden');
+                            return;
+                        }
+                        const exportOption = e.target.closest('.export-history-option');
+                        if (exportOption) {
+                            e.preventDefault();
+                            const item = type === 'attendance' ? state.attendanceHistory.find(i => i.id === id) : state.paymentsHistory.find(i => i.id === id);
+                            if (item) handleExport(exportOption.dataset.format, item);
+                            return;
+                        }
+                    }
+                }
+                return;
+            }
+            
+            if (tab === 'dashboard') return;
 
             const clearBtn = e.target.closest('.search-clear-btn');
             if (clearBtn) {
@@ -1389,32 +1432,7 @@
                     stateChanged = true;
                     break;
                 case 'cancel-edit-btn': cancelEditing(); break;
-                case 'import-session-btn': document.getElementById('import-session-input').click(); break;
-                case 'close-history-detail':
-                    state.ui.history.viewingItem = null;
-                    renderHistoryLists();
-                    break;
             }
-
-            if (tab === 'history') {
-                const historyCard = e.target.closest('[data-id]');
-                if (!historyCard) return;
-                const { id, type } = historyCard.dataset;
-                if (e.target.closest('.view-history-btn')) viewHistoryDetail(id, type);
-                if (e.target.closest('.delete-history-btn')) deleteHistoryItem(id, type);
-                if (e.target.closest('.edit-history-btn')) startEditingHistoryItem(id, type);
-                if (e.target.closest('.export-history-btn')) {
-                    e.stopPropagation();
-                    historyCard.querySelector('.export-history-options')?.classList.toggle('hidden');
-                }
-                const exportOption = e.target.closest('.export-history-option');
-                if (exportOption) {
-                    e.preventDefault();
-                    const item = type === 'attendance' ? state.attendanceHistory.find(i => i.id === id) : state.paymentsHistory.find(i => i.id === id);
-                    if (item) handleExport(exportOption.dataset.format, item);
-                }
-            }
-
             if(stateChanged) { saveCurrentScrollPositions(); recordState(); debouncedAutosave(); renderCurrentTab(); }
         }
 
@@ -1809,7 +1827,7 @@
                     content += `<p>None</p>`;
                 }
             }
-            content += `<div class="footer">Generated by ATTEND. & MC app on ${new Date().toLocaleString()}</div>`;
+            content += `<div class="footer">Generated by Rostedge Pro on ${new Date().toLocaleString()}</div>`;
             return content;
         }
         
