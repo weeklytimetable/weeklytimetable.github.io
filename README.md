@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="en" data-theme="light">
 <head>
     <meta charset="UTF-8">
@@ -201,29 +200,31 @@
         /* Styles for professional document export/view */
         .export-document {
             font-family: Arial, sans-serif;
-            color: #333;
             padding: 2rem;
-            background-color: #fff;
+            background-color: #ffffff;
             border: 1px solid #ddd;
         }
-        .export-document h1 { font-size: 28px; font-weight: bold; text-align: center; margin-bottom: 10px; color: #1a237e; }
-        .export-document h2 { font-size: 22px; font-weight: bold; text-align: center; margin-bottom: 25px; color: #555; border-bottom: 2px solid #1a237e; padding-bottom: 10px;}
-        .export-document .meta-info { text-align: center; margin-bottom: 25px; font-size: 14px; color: #555; line-height: 1.6; }
-        .export-document .meta-info strong { color: #000; }
+        .export-document, .export-document *, .export-document p, .export-document div, .export-document td, .export-document th {
+            color: #333 !important;
+        }
+        .export-document h1 { font-size: 28px; font-weight: bold; text-align: center; margin-bottom: 10px; color: #1a237e !important; }
+        .export-document h2 { font-size: 22px; font-weight: bold; text-align: center; margin-bottom: 25px; color: #555 !important; border-bottom: 2px solid #1a237e; padding-bottom: 10px;}
+        .export-document .meta-info { text-align: center; margin-bottom: 25px; font-size: 14px; line-height: 1.6; }
+        .export-document .meta-info strong { color: #000 !important; }
         .export-document .summary-section { background-color: #f8f9fa; border: 1px solid #e0e0e0; border-radius: 8px; padding: 20px; margin-bottom: 30px; display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 15px; }
         .export-document .summary-item { text-align: center; }
-        .export-document .summary-item .label { font-size: 14px; color: #666; margin-bottom: 5px; }
+        .export-document .summary-item .label { font-size: 14px; color: #666 !important; margin-bottom: 5px; }
         .export-document .summary-item .value { font-size: 20px; font-weight: bold; }
-        .export-document .summary-item .value.present, .export-document .summary-item .value.received { color: #28a745; }
-        .export-document .summary-item .value.absent, .export-document .summary-item .value.due { color: #dc3545; }
-        .export-document h3 { font-size: 18px; font-weight: bold; border-bottom: 1px solid #ccc; padding-bottom: 8px; margin-top: 30px; margin-bottom: 15px; color: #333; }
+        .export-document .summary-item .value.present, .export-document .summary-item .value.received { color: #28a745 !important; }
+        .export-document .summary-item .value.absent, .export-document .summary-item .value.due { color: #dc3545 !important; }
+        .export-document h3 { font-size: 18px; font-weight: bold; border-bottom: 1px solid #ccc; padding-bottom: 8px; margin-top: 30px; margin-bottom: 15px; color: #333 !important; }
         .export-document table { width: 100%; border-collapse: collapse; margin-top: 15px; page-break-inside: auto; }
         .export-document tr { page-break-inside: avoid; page-break-after: auto; }
         .export-document th, .export-document td { border: 1px solid #ddd; padding: 12px; text-align: left; font-size: 14px; }
         .export-document thead { display: table-header-group; }
-        .export-document th { background-color: #e9ecef; font-weight: bold; color: #495057; }
+        .export-document th { background-color: #e9ecef; font-weight: bold; color: #495057 !important; }
         .export-document tbody tr:nth-child(even) { background-color: #f8f9fa; }
-        .export-document .footer { text-align: center; margin-top: 40px; font-size: 12px; color: #888; border-top: 1px solid #ccc; padding-top: 15px;}
+        .export-document .footer { text-align: center; margin-top: 40px; font-size: 12px; color: #888 !important; border-top: 1px solid #ccc; padding-top: 15px;}
         
         /* Redesign Styles */
         .control-group {
@@ -353,7 +354,7 @@
             <span>Attendance</span>
         </button>
         <button class="nav-btn" data-tab="payments">
-            <svg class="h-6 w-6 pointer-events-none" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125 1.125h-15c-.621 0-1.125-.504-1.125-1.125v-9.75c0-.621.504-1.125 1.125-1.125h1.5" /></svg>
+            <svg class="h-6 w-6 pointer-events-none" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="2" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" d="M2.25 18.75a60.07 60.07 0 0115.797 2.101c.727.198 1.453-.342 1.453-1.096V18.75M3.75 4.5v.75A.75.75 0 013 6h-.75m0 0v-.375c0-.621.504-1.125 1.125-1.125H20.25M2.25 6v9m18-10.5v.75c0 .414.336.75.75.75h.75m-1.5-1.5h.375c.621 0 1.125.504 1.125 1.125v9.75c0 .621-.504 1.125-1.125-1.125h-15c-.621 0-1.125-.504-1.125-1.125v-9.75c0-.621.504-1.125 1.125-1.125h1.5" /></svg>
             <span>Payments</span>
         </button>
         <button class="nav-btn" data-tab="history">
@@ -389,6 +390,9 @@
             </div>
         </div>
     </div>
+    
+    <!-- Input for single session import (moved here to be persistent) -->
+    <input type="file" id="import-session-input" class="hidden" accept=".json">
     
     <!-- Hidden container for generating exports -->
     <div class="export-container">
@@ -808,7 +812,6 @@
                             <svg class="h-5 w-5 pointer-events-none" fill="none" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path stroke-linecap="round" stroke-linejoin="round" d="M4 16v1a3 3 0 003 3h10a3 3 0 003-3v-1m-4-8l-4-4m0 0L8 8m4-4v12" /></svg>
                             <span>Import Session</span>
                         </button>
-                        <input type="file" id="import-session-input" class="hidden" accept=".json">
                     </div>
                     <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
                         <div>
@@ -888,10 +891,11 @@
                         <div><p class="font-bold text-lg">${item.records.length}</p><p class="text-xs text-[var(--text-secondary)]">Total</p></div>
                     </div>`;
             } else { // payments
-                const totalCollected = item.records.reduce((sum, r) => sum + parseFloat(r.payment.amount || 0), 0);
+                const paidRecords = item.records.filter(r => r.payment);
+                const totalCollected = paidRecords.reduce((sum, r) => sum + parseFloat(r.payment.amount || 0), 0);
                 statsHTML = `
                      <div class="flex justify-around text-center text-sm">
-                        <div><p class="font-bold text-lg">${item.records.length}</p><p class="text-xs text-[var(--text-secondary)]">Paid</p></div>
+                        <div><p class="font-bold text-lg">${paidRecords.length}</p><p class="text-xs text-[var(--text-secondary)]">Paid</p></div>
                         <div><p class="font-bold text-lg">₹${totalCollected.toFixed(2)}</p><p class="text-xs text-[var(--text-secondary)]">Collected</p></div>
                     </div>`;
             }
@@ -1480,18 +1484,46 @@
 
         function savePaymentsCollection() {
             const now = new Date();
-            const recordsToSave = state.students.filter(s => s.payment).map(({ reg, name, payment }) => ({ reg, name, payment }));
-            if (recordsToSave.length === 0) { alert("No payments recorded."); return; }
+            const studentsInView = getFilteredStudents('payments');
+            const recordsForSession = studentsInView.map(s => ({ reg: s.reg, name: s.name, payment: s.payment ? deepClone(s.payment) : null }));
+            
+            if (recordsForSession.filter(r => r.payment).length === 0) { alert("No payments recorded."); return; }
+
+            const defaultAmount = document.getElementById('payments-amount')?.value || 0;
+            const filterDescription = getPaymentsFilterDescription();
+
+            const sessionContext = {
+                totalStudentsInView: studentsInView.length,
+                defaultAmount: defaultAmount,
+                filterDescription: filterDescription,
+            };
+            
             const { type, id } = state.ui.history.editingSession;
             if (type === 'payments' && id) {
                  const sessionIndex = state.paymentsHistory.findIndex(s => s.id === id);
                  if (sessionIndex !== -1) {
-                    state.paymentsHistory[sessionIndex] = { ...state.paymentsHistory[sessionIndex], collector: state.ui.payments.collector || 'N/A', purpose: state.ui.payments.purpose || 'General Collection', records: recordsToSave };
+                    state.paymentsHistory[sessionIndex] = { 
+                        ...state.paymentsHistory[sessionIndex], 
+                        collector: state.ui.payments.collector || 'N/A', 
+                        purpose: state.ui.payments.purpose || 'General Collection', 
+                        records: recordsForSession,
+                        context: sessionContext 
+                    };
                      alert("Payments collection updated!");
                  }
                 cancelEditing(false);
             } else {
-                const session = { id: `pay-${Date.now()}`, type: 'payments', date: now.toLocaleDateString(), time: now.toLocaleTimeString(), collector: state.ui.payments.collector || 'N/A', purpose: state.ui.payments.purpose || 'General Collection', records: recordsToSave, isImported: false };
+                const session = { 
+                    id: `pay-${Date.now()}`, 
+                    type: 'payments', 
+                    date: now.toLocaleDateString(), 
+                    time: now.toLocaleTimeString(), 
+                    collector: state.ui.payments.collector || 'N/A', 
+                    purpose: state.ui.payments.purpose || 'General Collection', 
+                    records: recordsForSession, 
+                    context: sessionContext,
+                    isImported: false 
+                };
                 state.paymentsHistory.unshift(session);
                 alert("Payments collection saved!");
             }
@@ -1603,6 +1635,19 @@
             return `${typeText} - ${rangeText}`;
         };
 
+        function getPaymentsFilterDescription() {
+            const uiState = state.ui.payments;
+            const parts = [];
+            parts.push(getFilterDescription('payments')); // The number part
+            if (uiState.statusFilter !== 'all') {
+                parts.push(`Status: ${uiState.statusFilter.charAt(0).toUpperCase() + uiState.statusFilter.slice(1)}`);
+            }
+            if (uiState.paymentMethodFilter !== 'all') {
+                parts.push(`Method: ${uiState.paymentMethodFilter}`);
+            }
+            return parts.join('; ');
+        }
+
         function handleExport(format, specificItem = null) {
             const itemToExport = specificItem || getCurrentTabDataForExport();
             if (!itemToExport) { alert("No data to export."); return; }
@@ -1639,30 +1684,39 @@
                     if (presentRecords.length > 0) { ws_data.push(['Present Students'], ['Reg No', 'Name']); presentRecords.forEach(r => ws_data.push([r.reg, r.name])); ws_data.push([]); }
                     if (absentRecords.length > 0) { ws_data.push(['Absent Students'], ['Reg No', 'Name']); absentRecords.forEach(r => ws_data.push([r.reg, r.name])); }
                 } else if (itemToExport.type === 'payments') {
-                    const records = itemToExport.studentRecords || itemToExport.records;
+                    const records = itemToExport.records || itemToExport.studentRecords; // Normalize
                     const paidRecords = records.filter(r => r.payment);
                     const unpaidRecords = records.filter(r => !r.payment);
-                    const allStudentsInView = records;
                     const totalCollected = paidRecords.reduce((sum, r) => sum + parseFloat(r.payment.amount || 0), 0);
-                    const defaultAmount = parseFloat(itemToExport.defaultAmount || 0);
-                    const totalExpected = defaultAmount > 0 ? allStudentsInView.length * defaultAmount : totalCollected;
-                    const dueAmount = Math.max(0, totalExpected - totalCollected);
+                    let totalExpected, unpaidCount, dueAmount, filterDesc;
+
+                    unpaidCount = unpaidRecords.length;
+                    filterDesc = itemToExport.context?.filterDescription || itemToExport.filterDescription;
+                    if (itemToExport.context) { // New history format
+                        const defaultAmount = parseFloat(itemToExport.context.defaultAmount || 0);
+                        totalExpected = defaultAmount > 0 ? itemToExport.context.totalStudentsInView * defaultAmount : totalCollected;
+                    } else if (itemToExport.defaultAmount !== undefined) { // Current view format
+                        const defaultAmount = parseFloat(itemToExport.defaultAmount || 0);
+                        totalExpected = defaultAmount > 0 ? records.length * defaultAmount : totalCollected;
+                    } else { totalExpected = totalCollected; unpaidCount = 0; } // Legacy history
+                    
+                    dueAmount = Math.max(0, totalExpected - totalCollected);
                     const cashTotal = paidRecords.filter(s => s.payment.method === 'Cash').reduce((sum, s) => sum + (parseFloat(s.payment.amount) || 0), 0);
                     const ePayTotal = paidRecords.filter(s => s.payment.method === 'ePay').reduce((sum, s) => sum + (parseFloat(s.payment.amount) || 0), 0);
 
                     ws_data.push([`Payments: ${itemToExport.purpose || 'Current Collection'}`], [`Date: ${itemToExport.date}`, `Time: ${itemToExport.time}`]);
-                    if (itemToExport.filterDescription) ws_data.push([`Filter: ${itemToExport.filterDescription}`]);
+                    if (filterDesc) ws_data.push([`Filter: ${filterDesc}`]);
                     ws_data.push([], ["Summary"]);
                     ws_data.push(["Budget", `₹${totalExpected.toFixed(2)}`]);
                     ws_data.push(["Received", `₹${totalCollected.toFixed(2)}`]);
                     ws_data.push(["Due", `₹${dueAmount.toFixed(2)}`]);
-                    ws_data.push(["Paid/Unpaid", `${paidRecords.length} / ${unpaidRecords.length}`]);
+                    ws_data.push(["Paid/Unpaid", `${paidRecords.length} / ${unpaidCount}`]);
                     ws_data.push(["Cash", `₹${cashTotal.toFixed(2)}`]);
                     ws_data.push(["ePay", `₹${ePayTotal.toFixed(2)}`]);
                     ws_data.push([]);
 
                     if (paidRecords.length > 0) { ws_data.push(['Paid Students'], ['Reg No', 'Name', 'Amount (₹)', 'Method']); paidRecords.forEach(r => ws_data.push([r.reg, r.name, r.payment.amount, r.payment.method])); ws_data.push([]); }
-                    if (unpaidRecords.length > 0 && itemToExport.studentRecords) { ws_data.push(['Unpaid Students'], ['Reg No', 'Name']); unpaidRecords.forEach(r => ws_data.push([r.reg, r.name])); }
+                    if (unpaidRecords.length > 0) { ws_data.push(['Unpaid Students'], ['Reg No', 'Name']); unpaidRecords.forEach(r => ws_data.push([r.reg, r.name])); }
                 }
                 const ws = XLSX.utils.aoa_to_sheet(ws_data); XLSX.utils.book_append_sheet(wb, ws, sheetName); XLSX.writeFile(wb, `${filename}.xlsx`);
             } else if (format === 'json') {
@@ -1681,42 +1735,56 @@
             const now = new Date(); const tab = state.currentTab;
             if (tab === 'attendance' || tab === 'payments') {
                 const filteredStudents = getRangeFilteredStudents(tab);
-                if (tab === 'attendance') return { type: 'attendance', date: now.toLocaleDateString(), time: now.toLocaleTimeString(), takenBy: document.getElementById('taken-by-input')?.value || 'N/A', subject: document.getElementById('subject-input')?.value || 'Current View', records: filteredStudents.map(s => ({ reg: s.reg, name: s.name, present: s.present === true })), filterDescription: getFilterDescription('attendance') };
-                else return { type: 'payments', date: now.toLocaleDateString(), time: now.toLocaleTimeString(), collector: state.ui.payments.collector || 'N/A', purpose: state.ui.payments.purpose || 'Current Collection', studentRecords: filteredStudents.map(s => ({ reg: s.reg, name: s.name, payment: s.payment })), defaultAmount: state.ui.payments.defaultAmount || 0, filterDescription: getFilterDescription('payments') };
-            } return null;
+                if (tab === 'attendance') {
+                     return { type: 'attendance', date: now.toLocaleDateString(), time: now.toLocaleTimeString(), takenBy: document.getElementById('taken-by-input')?.value || 'N/A', subject: document.getElementById('subject-input')?.value || 'Current View', records: filteredStudents.map(s => ({ reg: s.reg, name: s.name, present: s.present === true })), filterDescription: getFilterDescription('attendance') };
+                } else {
+                    return { type: 'payments', date: now.toLocaleDateString(), time: now.toLocaleTimeString(), collector: state.ui.payments.collector || 'N/A', purpose: state.ui.payments.purpose || 'Current Collection', records: filteredStudents.map(s => ({ reg: s.reg, name: s.name, payment: s.payment })), defaultAmount: state.ui.payments.defaultAmount || 0, filterDescription: getPaymentsFilterDescription() };
+                }
+            } 
+            return null;
         };
 
         function getExportHTML(item) {
+            const records = item.records || item.studentRecords; // Normalize
             let metaInfo = `<div class="meta-info"><strong>Date:</strong> ${item.date} at ${item.time}<br>`;
             if (item.takenBy) metaInfo += `<strong>Taken by:</strong> ${item.takenBy}<br>`;
             if (item.collector) metaInfo += `<strong>Collected by:</strong> ${item.collector}<br>`;
-            if (item.filterDescription) metaInfo += `<strong>Filter:</strong> ${item.filterDescription}`;
+            const filterDescription = item.context?.filterDescription || item.filterDescription;
+            if (filterDescription) metaInfo += `<strong>Filter:</strong> ${filterDescription}`;
             metaInfo += `</div>`;
 
             let content = `<h1>${item.type === 'attendance' ? 'Attendance Report' : 'Payments Report'}</h1><h2>${item.subject || item.purpose}</h2>${metaInfo}`;
             
             if (item.type === 'attendance') {
-                const present = item.records.filter(r => r.present).length;
-                const absent = item.records.length - present;
+                const present = records.filter(r => r.present).length;
+                const absent = records.length - present;
                 content += `<div class="summary-section">
-                    <div class="summary-item"><div class="label">Total</div><div class="value">${item.records.length}</div></div>
+                    <div class="summary-item"><div class="label">Total</div><div class="value">${records.length}</div></div>
                     <div class="summary-item"><div class="label">Present</div><div class="value present">${present}</div></div>
                     <div class="summary-item"><div class="label">Absent</div><div class="value absent">${absent}</div></div>
                 </div>`;
                 content += `<h3>Present (${present})</h3>`;
-                if(present > 0) { content += `<table><thead><tr><th>Reg No</th><th>Name</th></tr></thead><tbody>${item.records.filter(r => r.present).map(r => `<tr><td>${r.reg}</td><td>${r.name}</td></tr>`).join('')}</tbody></table>`; } else { content += `<p>None</p>`; }
+                if(present > 0) { content += `<table><thead><tr><th>Reg No</th><th>Name</th></tr></thead><tbody>${records.filter(r => r.present).map(r => `<tr><td>${r.reg}</td><td>${r.name}</td></tr>`).join('')}</tbody></table>`; } else { content += `<p>None</p>`; }
                 content += `<h3>Absent (${absent})</h3>`;
-                if(absent > 0) { content += `<table><thead><tr><th>Reg No</th><th>Name</th></tr></thead><tbody>${item.records.filter(r => !r.present).map(r => `<tr><td>${r.reg}</td><td>${r.name}</td></tr>`).join('')}</tbody></table>`; } else { content += `<p>None</p>`; }
+                if(absent > 0) { content += `<table><thead><tr><th>Reg No</th><th>Name</th></tr></thead><tbody>${records.filter(r => !r.present).map(r => `<tr><td>${r.reg}</td><td>${r.name}</td></tr>`).join('')}</tbody></table>`; } else { content += `<p>None</p>`; }
             } else if (item.type === 'payments') {
-                const isCurrentView = !!item.studentRecords;
-                const allRecords = item.studentRecords || item.records;
-                const paidRecords = allRecords.filter(r => r.payment);
-                const unpaidRecords = isCurrentView ? allRecords.filter(r => !r.payment) : [];
-
+                const paidRecords = records.filter(r => r.payment);
+                const unpaidRecords = records.filter(r => !r.payment);
                 const totalCollected = paidRecords.reduce((sum, r) => sum + parseFloat(r.payment.amount || 0), 0);
-                const defaultAmount = parseFloat(item.defaultAmount || 0);
-                const totalExpected = (isCurrentView && defaultAmount > 0) ? allRecords.length * defaultAmount : totalCollected;
-                const dueAmount = Math.max(0, totalExpected - totalCollected);
+                let totalExpected, unpaidCount, dueAmount;
+
+                unpaidCount = unpaidRecords.length;
+                if (item.context) { // New history format with full context
+                    const defaultAmount = parseFloat(item.context.defaultAmount || 0);
+                    totalExpected = defaultAmount > 0 ? item.context.totalStudentsInView * defaultAmount : totalCollected;
+                } else if (item.defaultAmount !== undefined) { // "Current View" export
+                    const defaultAmount = parseFloat(item.defaultAmount || 0);
+                    totalExpected = defaultAmount > 0 ? records.length * defaultAmount : totalCollected;
+                } else { // Legacy history item
+                    totalExpected = totalCollected;
+                    unpaidCount = item.context?.totalStudentsInView ? item.context.totalStudentsInView - paidRecords.length : 0; // Best guess for older items
+                }
+                dueAmount = Math.max(0, totalExpected - totalCollected);
                 const cashTotal = paidRecords.filter(s => s.payment.method === 'Cash').reduce((sum, s) => sum + (parseFloat(s.payment.amount) || 0), 0);
                 const ePayTotal = paidRecords.filter(s => s.payment.method === 'ePay').reduce((sum, s) => sum + (parseFloat(s.payment.amount) || 0), 0);
 
@@ -1724,7 +1792,7 @@
                     <div class="summary-item"><div class="label">Budget</div><div class="value">₹${totalExpected.toFixed(2)}</div></div>
                     <div class="summary-item"><div class="label">Received</div><div class="value received">₹${totalCollected.toFixed(2)}</div></div>
                     <div class="summary-item"><div class="label">Due</div><div class="value due">₹${dueAmount.toFixed(2)}</div></div>
-                    <div class="summary-item"><div class="label">Paid/Unpaid</div><div class="value"><span class="present">${paidRecords.length}</span> / <span class="absent">${unpaidRecords.length}</span></div></div>
+                    <div class="summary-item"><div class="label">Paid/Unpaid</div><div class="value"><span class="present">${paidRecords.length}</span> / <span class="absent">${unpaidCount}</span></div></div>
                     <div class="summary-item"><div class="label">Cash</div><div class="value">₹${cashTotal.toFixed(2)}</div></div>
                     <div class="summary-item"><div class="label">ePay</div><div class="value">₹${ePayTotal.toFixed(2)}</div></div>
                 </div>`;
@@ -1732,9 +1800,13 @@
                 content += `<h3>Paid (${paidRecords.length})</h3>`;
                 if(paidRecords.length > 0) { content += `<table><thead><tr><th>Reg No</th><th>Name</th><th>Amount (₹)</th><th>Method</th></tr></thead><tbody>${paidRecords.map(r => `<tr><td>${r.reg}</td><td>${r.name}</td><td>${r.payment.amount}</td><td>${r.payment.method}</td></tr>`).join('')}</tbody></table>`; } else { content += `<p>None</p>`; }
                 
-                if (isCurrentView) {
-                    content += `<h3>Pending (${unpaidRecords.length})</h3>`;
-                    if(unpaidRecords.length > 0) { content += `<table><thead><tr><th>Reg No</th><th>Name</th></tr></thead><tbody>${unpaidRecords.map(r => `<tr><td>${r.reg}</td><td>${r.name}</td></tr>`).join('')}</tbody></table>`; } else { content += `<p>None</p>`; }
+                content += `<h3>Pending (${unpaidCount})</h3>`;
+                if (unpaidRecords.length > 0) {
+                     content += `<table><thead><tr><th>Reg No</th><th>Name</th></tr></thead><tbody>${unpaidRecords.map(r => `<tr><td>${r.reg}</td><td>${r.name}</td></tr>`).join('')}</tbody></table>`;
+                } else if (unpaidCount > 0 && unpaidRecords.length === 0) {
+                    content += `<p>The list of pending students is not available for this legacy record.</p>`;
+                } else {
+                    content += `<p>None</p>`;
                 }
             }
             content += `<div class="footer">Generated by ATTEND. & MC app on ${new Date().toLocaleString()}</div>`;
